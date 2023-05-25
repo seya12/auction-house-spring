@@ -17,4 +17,9 @@ public class CustomerService {
   public List<Customer> getCustomers() {
     return customerRepository.findAll();
   }
+
+  public Customer findByEmail(String userName) {
+
+    return customerRepository.findByEmail(userName);
+  }
 }
