@@ -6,14 +6,17 @@ import UserContext from "../UserContext";
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(false);
     setEmail(e.target.value);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(false);
     setPassword(e.target.value);
   };
 
@@ -26,7 +29,7 @@ const LoginPage: React.FC = () => {
       setUser({ email, id: 1 });
       navigate("/home");
     } else {
-      console.log("Login failed");
+      setError(true);
     }
   };
 
@@ -98,6 +101,7 @@ const LoginPage: React.FC = () => {
               Sign in
             </button>
           </div>
+          {error && <div className="text-center text-2xl text-red-500">Invalid email or password</div>}
         </form>
       </div>
     </div>
