@@ -1,12 +1,12 @@
 import { useState, useEffect, ChangeEvent, MouseEvent, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { Article } from "../services/auction-house-service";
+import { ArticleDto } from "../services/auction-house-service";
 import * as api from "../services/auction-house-service";
 import UserContext from "../UserContext";
 
 const ArticleDetail: React.FC = () => {
   const userId = useParams();
-  const [article, setArticle] = useState<Article | null>(null);
+  const [article, setArticle] = useState<ArticleDto | null>(null);
   const [bidAmount, setBidAmount] = useState(0);
   const { user } = useContext(UserContext);
 
@@ -24,10 +24,13 @@ const ArticleDetail: React.FC = () => {
     setBidAmount(Number(e.target.value));
   };
 
-  const handleBidSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleBidSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // Do something with the bid amount, e.g., make an API call to update the bid
     console.log(`Placing bid for ${bidAmount} with user ${user?.email}`);
+    const result = await api.makeBid(article?.id || 0, { customerId: user?.id || 0, bid: bidAmount });
+    if (result.status === 204) {
+      console.log("success");
+    }
   };
 
   return (

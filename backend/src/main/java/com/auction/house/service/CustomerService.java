@@ -18,8 +18,11 @@ public class CustomerService {
     return customerRepository.findAll();
   }
 
-  public Customer findByEmail(String userName) {
-
+  public Optional<Customer> getCustomer(String userName) {
     return customerRepository.findByEmail(userName);
+  }
+
+  public Optional<Customer> getCustomer(Long id) {
+    return customerRepository.findById(id);
   }
 }

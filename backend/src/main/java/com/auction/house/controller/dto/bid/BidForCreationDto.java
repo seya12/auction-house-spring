@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BidDto {
+public class BidForCreationDto {
   @NotNull
   private Long customerId;
   @NotNull

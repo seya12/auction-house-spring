@@ -43,26 +43,22 @@ public class Customer extends BaseEntity {
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
   @Cascade(CascadeType.ALL)
   @ToString.Exclude
-  @JsonManagedReference
   private List<PaymentOption> paymentOptions;
 
 
   @OneToMany(mappedBy = "buyer")
   @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
   @ToString.Exclude
-  @JsonManagedReference
   private List<Article> boughtArticles;
 
   @OneToMany(mappedBy = "seller")
   @Cascade({CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
   @ToString.Exclude
-  @JsonManagedReference
   private List<Article> soldArticles;
 
   @OneToMany(mappedBy = "customer", orphanRemoval = true)
   @Cascade(CascadeType.ALL)
   @ToString.Exclude
-  @JsonManagedReference
   private List<Bid> bids;
 
 }

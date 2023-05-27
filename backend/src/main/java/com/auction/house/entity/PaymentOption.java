@@ -13,6 +13,5 @@ import lombok.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class PaymentOption extends BaseEntity {
   @ManyToOne
-  @JsonBackReference
   private Customer owner;
 }

@@ -13,72 +13,54 @@ const oazapfts = Oazapfts.runtime(defaults);
 export const servers = {
     generatedServerUrl: "http://localhost:8080"
 };
-export type Address = {
-    zipCode?: string;
-    city?: string;
-    street?: string;
+export type CustomerForLoginDto = {
+    email: string;
+    password: string;
 };
-export type PaymentOption = {
-    id?: number;
-    owner?: Customer;
+export type CustomerInfoDto = {
+    id: number;
+    email: string;
 };
-export type Bid = {
-    id?: number;
-    bid?: number;
-    date?: string;
-    customer?: Customer;
-    article?: Article;
+export type BidDto = {
+    customerId: number;
+    bid: number;
 };
-export type Article = {
-    id?: number;
+export type ArticleDto = {
+    id: number;
     name?: string;
     description?: string;
     reservePrice?: number;
     hammerPrice?: number;
     auctionStartDate?: string;
     auctionEndDate?: string;
-    seller?: Customer;
-    buyer?: Customer;
-    bids?: Bid[];
     status?: "LISTED" | "AUCTION_RUNNING" | "SOLD" | "NOT_SOLD";
 };
-export type Customer = {
-    id?: number;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    shippingAddress?: Address;
-    paymentAddress?: Address;
-    paymentOptions?: PaymentOption[];
-    boughtArticles?: Article[];
-    soldArticles?: Article[];
-    bids?: Bid[];
-};
-export function getCustomers(opts?: Oazapfts.RequestOpts) {
+export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
-        data: Customer[];
-    }>("/customers", {
-        ...opts
-    });
+        data: CustomerInfoDto;
+    }>("/customers/login", oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: customerForLoginDto
+    }));
 }
-export function login(email: string, opts?: Oazapfts.RequestOpts) {
+export function makeBid(id: number, bidDto: BidDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 204;
         data: object;
-    }>(`/customers${QS.query(QS.explode({
-        email
-    }))}`, {
+    }>(`/articles/${encodeURIComponent(id)}/bid`, oazapfts.json({
         ...opts,
-        method: "POST"
-    });
+        method: "POST",
+        body: bidDto
+    }));
 }
 export function getArticles({ status }: {
     status?: "LISTED" | "AUCTION_RUNNING" | "SOLD" | "NOT_SOLD";
 } = {}, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
-        data: Article[];
+        data: ArticleDto[];
     }>(`/articles${QS.query(QS.explode({
         status
     }))}`, {
@@ -88,7 +70,7 @@ export function getArticles({ status }: {
 export function getArticle(id: number, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
-        data: Article;
+        data: ArticleDto;
     }>(`/articles/${encodeURIComponent(id)}`, {
         ...opts
     });

@@ -33,18 +33,15 @@ public class Article extends BaseEntity {
 
   @ManyToOne
   @ToString.Exclude
-  @JsonBackReference
   private Customer seller;
 
   @ManyToOne
   @ToString.Exclude
-  @JsonBackReference
   private Customer buyer;
 
   @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, orphanRemoval = true)
   @Cascade(CascadeType.ALL)
   @ToString.Exclude
-  @JsonManagedReference
   private List<Bid> bids;
 
   @Enumerated(EnumType.STRING)

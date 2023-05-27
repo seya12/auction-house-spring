@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import * as api from "../services/auction-house-service";
 import { useNavigate } from "react-router-dom";
-import UserContext from "../UserContext";
+import UserContext, { User } from "../UserContext";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,9 +24,10 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
-    const result = await api.login(email);
-    if (result.status === 204) {
-      setUser({ email, id: 1 });
+    const result = await api.login({ email, password });
+    if (result.status === 200) {
+      const currentUser: User = { email: result.data.email, id: result.data.id };
+      setUser(currentUser);
       navigate("/home");
     } else {
       setError(true);

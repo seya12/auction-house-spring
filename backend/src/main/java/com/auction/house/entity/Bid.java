@@ -20,11 +20,9 @@ public class Bid extends BaseEntity {
   private LocalDateTime date;
 
   @ManyToOne
-  @JsonBackReference
   private Customer customer;
 
   @ManyToOne
-  @JsonBackReference
   private Article article;
 
   public void addArticle(Article article) {

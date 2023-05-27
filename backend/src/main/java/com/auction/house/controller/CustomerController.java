@@ -1,35 +1,29 @@
 package com.auction.house.controller;
 
-import com.auction.house.entity.*;
+import com.auction.house.controller.dto.customer.*;
 import com.auction.house.service.*;
+import org.modelmapper.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
+import org.springframework.web.server.*;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
 
   final CustomerService customerService;
+  final ModelMapper modelMapper;
 
-  public CustomerController(CustomerService customerService) {
+  public CustomerController(CustomerService customerService, ModelMapper modelMapper) {
     this.customerService = customerService;
+    this.modelMapper = modelMapper;
   }
 
+  @PostMapping("/login")
+  public CustomerInfoDto login(@RequestBody CustomerForLoginDto customerForLoginDto) {
+    var customer = customerService.getCustomer(customerForLoginDto.getEmail()).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-  @GetMapping
-  public List<Customer> getCustomers() {
-    return customerService.getCustomers();
-  }
-
-  @PostMapping
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<?> login(@RequestParam String email){
-
-    if(customerService.findByEmail(email) != null){
-      return ResponseEntity.noContent().build();
-    }
-    return ResponseEntity.notFound().build();
+    return modelMapper.map(customer, CustomerInfoDto.class);
   }
 }

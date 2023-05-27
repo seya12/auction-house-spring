@@ -1,12 +1,14 @@
-package com.auction.house.controller.dtos;
+package com.auction.house.controller.dto.customer;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerForLoginDto {
+  @NotNull
   private String email;
+  @NotNull
   private String password;
 }
