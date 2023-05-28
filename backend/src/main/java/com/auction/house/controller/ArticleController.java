@@ -38,7 +38,7 @@ public class ArticleController {
   public ArticleDto getArticle(@PathVariable Long id) {
     var article = articleService.getArticle(id).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
-    
+
     return modelMapper.map(article, ArticleDto.class);
   }
 
@@ -68,5 +68,36 @@ public class ArticleController {
     var newArticle = articleService.insert(articleEntity, customer);
     return new ResponseEntity<>(modelMapper.map(newArticle, ArticleDto.class), HttpStatus.CREATED);
   }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public ResponseEntity<?> deleteArticle(@PathVariable Long id) {
+    var article = articleService.getArticle(id).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
+    articleService.delete(article);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping("/{id}/start")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public ResponseEntity<?> startAuction(@PathVariable Long id) {
+    var article = articleService.getArticle(id).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
+    articleService.start(article);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping("/{id}/stop")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public ResponseEntity<?> stopAuction(@PathVariable Long id) {
+    var article = articleService.getArticle(id).orElseThrow(() ->
+      new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
+    articleService.stop(article);
+    return ResponseEntity.noContent().build();
+  }
+
 
 }

@@ -1,4 +1,12 @@
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React from "react";
@@ -12,13 +20,16 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
-    state: { globalFilter },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: { globalFilter, sorting },
   });
 
   return (
@@ -31,9 +42,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           className="max-w-sm"
         />
         <ArticleDialog />
-        {/* <button className="ml-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-gray-600">
-          Add Article
-        </button> */}
       </div>
       <div className="rounded-md border">
         <Table>

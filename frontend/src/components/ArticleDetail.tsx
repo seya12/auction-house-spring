@@ -17,7 +17,7 @@ const ArticleDetail: React.FC = () => {
 
   const defaultBid: BidDto = { bid: 0, date: "" };
   const highestBid = article?.bids?.reduce((prev, curr) => (prev.bid > curr.bid ? prev : curr), defaultBid)?.bid ?? 0;
-  const userIsSeller = article?.sellerId === user?.id;
+  const userIsSeller = user !== null && article?.sellerId === user?.id;
 
   const fetchArticle = useCallback(async () => {
     const result = await api.getArticle(parseInt(articleId.id || ""));
@@ -50,6 +50,51 @@ const ArticleDetail: React.FC = () => {
     }
   };
 
+  const deleteArticle = async () => {
+    const result = await api.deleteArticle(article?.id || 0);
+    if (result.status === 204) {
+      toast({ title: "Success!", variant: "success", duration: 5000 });
+      navigate("/home/articles");
+    } else {
+      toast({
+        title: "Error deleting article",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        description: (result.data as any).message ?? "",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const startAuction = async () => {
+    const result = await api.startAuction(article?.id || 0);
+    if (result.status === 204) {
+      toast({ title: "Success!", variant: "success", duration: 5000 });
+      fetchArticle();
+    } else {
+      toast({
+        title: "Error starting auction",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        description: (result.data as any).message ?? "",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopAuction = async () => {
+    const result = await api.stopAuction(article?.id || 0);
+    if (result.status === 204) {
+      toast({ title: "Success!", variant: "success", duration: 5000 });
+      fetchArticle();
+    } else {
+      toast({
+        title: "Error stopping auction",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        description: (result.data as any).message ?? "",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between px-4 sm:px-0">
@@ -57,17 +102,20 @@ const ArticleDetail: React.FC = () => {
         <div className="ml-auto flex space-x-2 sm:justify-end">
           <Button
             disabled={!userIsSeller}
-            variant={"secondary"}>
+            variant={"secondary"}
+            onClick={deleteArticle}>
             Delete
           </Button>
           <Button
             disabled={!userIsSeller || article?.status !== "LISTED"}
-            variant={"secondary"}>
+            variant={"secondary"}
+            onClick={startAuction}>
             Start
           </Button>
           <Button
             disabled={!userIsSeller || article?.status !== "AUCTION_RUNNING"}
-            variant={"secondary"}>
+            variant={"secondary"}
+            onClick={stopAuction}>
             Close
           </Button>
         </div>

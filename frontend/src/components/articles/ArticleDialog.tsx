@@ -34,6 +34,7 @@ const ArticleDialog: React.FC = () => {
       setOpen(false);
       toast({
         title: "Error creating article",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         description: (result.data as any).message ?? "",
         variant: "destructive",
       });

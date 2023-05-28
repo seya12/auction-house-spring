@@ -48,6 +48,24 @@ export type BidForCreationDto = {
     customerId: number;
     bid: number;
 };
+export function stopAuction(id: number, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 204;
+        data: object;
+    }>(`/articles/${encodeURIComponent(id)}/stop`, {
+        ...opts,
+        method: "PUT"
+    });
+}
+export function startAuction(id: number, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 204;
+        data: object;
+    }>(`/articles/${encodeURIComponent(id)}/start`, {
+        ...opts,
+        method: "PUT"
+    });
+}
 export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
@@ -96,5 +114,14 @@ export function getArticle(id: number, opts?: Oazapfts.RequestOpts) {
         data: ArticleDto;
     }>(`/articles/${encodeURIComponent(id)}`, {
         ...opts
+    });
+}
+export function deleteArticle(id: number, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 204;
+        data: object;
+    }>(`/articles/${encodeURIComponent(id)}`, {
+        ...opts,
+        method: "DELETE"
     });
 }

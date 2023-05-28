@@ -5,6 +5,7 @@ import com.auction.house.entity.enums.*;
 import com.auction.house.repository.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 
 @Service
@@ -32,7 +33,8 @@ public class ArticleService {
       return false;
     }
 
-    if(bidService.getHighestBid(article).getBid() >= bid){
+    var highestBid = bidService.getHighestBid(article);
+    if(highestBid != null && highestBid.getBid() >= bid){
       return false;
     }
 
@@ -51,5 +53,32 @@ public class ArticleService {
 
     article.addSeller(customer);
     return articleRepository.save(article);
+  }
+
+  public void delete(Article article) {
+    articleRepository.delete(article);
+  }
+
+  public void start(Article article) {
+    article.setStatus(ArticleStatus.AUCTION_RUNNING);
+    articleRepository.save(article);
+  }
+
+  public void stop(Article article) {
+    Bid highestBid = bidService.getHighestBid(article);
+    if(highestBid == null){
+      article.setStatus(ArticleStatus.NOT_SOLD);
+      article.setHammerPrice(null);
+      article.setBuyer(null);
+      articleRepository.save(article);
+      return;
+    }
+
+    article.setStatus(ArticleStatus.SOLD);
+    article.setAuctionEndDate(LocalDateTime.now());
+    article.setBuyer(highestBid.getCustomer());
+    article.setHammerPrice(highestBid.getBid());
+
+    articleRepository.save(article);
   }
 }
