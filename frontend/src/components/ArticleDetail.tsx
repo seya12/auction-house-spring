@@ -2,31 +2,36 @@ import { useState, useEffect, ChangeEvent, MouseEvent, useContext, useCallback }
 import { useNavigate, useParams } from "react-router-dom";
 import { ArticleDto } from "../services/auction-house-service";
 import * as api from "../services/auction-house-service";
+import { BidDto } from "../services/auction-house-service";
 import UserContext from "../UserContext";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "./ui/button";
 
 const ArticleDetail: React.FC = () => {
-  const userId = useParams();
   const [article, setArticle] = useState<ArticleDto | null>(null);
   const [bidAmount, setBidAmount] = useState(0);
+  const articleId = useParams();
   const { user } = useContext(UserContext);
-  const highestBid = article?.bids?.reduce((prev, curr) => (prev.bid > curr.bid ? prev : curr)).bid ?? 0;
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const defaultBid: BidDto = { bid: 0, date: "" };
+  const highestBid = article?.bids?.reduce((prev, curr) => (prev.bid > curr.bid ? prev : curr), defaultBid)?.bid ?? 0;
+  const userIsSeller = article?.sellerId === user?.id;
+
   const fetchArticle = useCallback(async () => {
-    const result = await api.getArticle(parseInt(userId.id || ""));
+    const result = await api.getArticle(parseInt(articleId.id || ""));
     if (result.status === 200) {
       setArticle(result.data);
     } else {
       toast({ title: "Article does not exist", variant: "destructive" });
       navigate("/home/articles");
     }
-  }, [userId, navigate, toast]);
+  }, [articleId, navigate, toast]);
 
   useEffect(() => {
     fetchArticle();
-  }, [userId, fetchArticle]);
+  }, [articleId, fetchArticle]);
 
   const handleBidChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBidAmount(Number(e.target.value));
@@ -47,8 +52,25 @@ const ArticleDetail: React.FC = () => {
 
   return (
     <div>
-      <div className="px-4 sm:px-0">
+      <div className="flex justify-between px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">Product Details</h3>
+        <div className="ml-auto flex space-x-2 sm:justify-end">
+          <Button
+            disabled={!userIsSeller}
+            variant={"secondary"}>
+            Delete
+          </Button>
+          <Button
+            disabled={!userIsSeller || article?.status !== "LISTED"}
+            variant={"secondary"}>
+            Start
+          </Button>
+          <Button
+            disabled={!userIsSeller || article?.status !== "AUCTION_RUNNING"}
+            variant={"secondary"}>
+            Close
+          </Button>
+        </div>
       </div>
       <div className="mt-6 border-b border-t border-gray-100">
         <dl className="divide-y divide-gray-100">

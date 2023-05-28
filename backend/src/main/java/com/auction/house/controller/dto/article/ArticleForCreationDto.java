@@ -11,15 +11,11 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleDto {
-  @NotNull
-  private Long id;
+public class ArticleForCreationDto {
   private String name;
   private String description;
   private Double reservePrice;
-  private Double hammerPrice;
   private LocalDateTime auctionStartDate;
-  private LocalDateTime auctionEndDate;
-  private ArticleStatus status;
-  private List<BidDto> bids;
+  @NotNull
+  private Long customerId;
 }

@@ -22,4 +22,5 @@ public class ArticleDto {
   private LocalDateTime auctionEndDate;
   private ArticleStatus status;
   private List<BidDto> bids;
+  private Long sellerId;
 }

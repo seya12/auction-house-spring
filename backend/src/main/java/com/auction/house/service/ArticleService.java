@@ -31,6 +31,7 @@ public class ArticleService {
     if(article == null || customer == null || bid == null){
       return false;
     }
+
     if(bidService.getHighestBid(article).getBid() >= bid){
       return false;
     }
@@ -42,5 +43,13 @@ public class ArticleService {
 
     bidService.insert(bidEntity);
     return true;
+  }
+
+  public Article insert(Article article, Customer customer) {
+
+    article.setStatus(ArticleStatus.LISTED);
+
+    article.addSeller(customer);
+    return articleRepository.save(article);
   }
 }

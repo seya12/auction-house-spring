@@ -1,15 +1,9 @@
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React from "react";
 import { Input } from "@/components/ui/input";
+import ArticleDialog from "./ArticleDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,14 +23,18 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter Description, Status, Hammer Price"
           value={globalFilter}
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
-      </div>{" "}
+        <ArticleDialog />
+        {/* <button className="ml-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-gray-600">
+          Add Article
+        </button> */}
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

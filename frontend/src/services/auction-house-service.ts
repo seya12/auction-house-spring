@@ -21,10 +21,6 @@ export type CustomerInfoDto = {
     id: number;
     email: string;
 };
-export type BidForCreationDto = {
-    customerId: number;
-    bid: number;
-};
 export type BidDto = {
     bid: number;
     date?: string;
@@ -39,6 +35,18 @@ export type ArticleDto = {
     auctionEndDate?: string;
     status?: "LISTED" | "AUCTION_RUNNING" | "SOLD" | "NOT_SOLD";
     bids?: BidDto[];
+    sellerId?: number;
+};
+export type ArticleForCreationDto = {
+    name?: string;
+    description?: string;
+    reservePrice?: number;
+    auctionStartDate?: string;
+    customerId: number;
+};
+export type BidForCreationDto = {
+    customerId: number;
+    bid: number;
 };
 export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
@@ -48,16 +56,6 @@ export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.
         ...opts,
         method: "POST",
         body: customerForLoginDto
-    }));
-}
-export function makeBid(id: number, bidForCreationDto: BidForCreationDto, opts?: Oazapfts.RequestOpts) {
-    return oazapfts.fetchJson<{
-        status: 204;
-        data: object;
-    }>(`/articles/${encodeURIComponent(id)}/bid`, oazapfts.json({
-        ...opts,
-        method: "POST",
-        body: bidForCreationDto
     }));
 }
 export function getArticles({ status }: {
@@ -71,6 +69,26 @@ export function getArticles({ status }: {
     }))}`, {
         ...opts
     });
+}
+export function createArticle(articleForCreationDto: ArticleForCreationDto, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 201;
+        data: ArticleDto;
+    }>("/articles", oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: articleForCreationDto
+    }));
+}
+export function makeBid(id: number, bidForCreationDto: BidForCreationDto, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 204;
+        data: object;
+    }>(`/articles/${encodeURIComponent(id)}/bid`, oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: bidForCreationDto
+    }));
 }
 export function getArticle(id: number, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{

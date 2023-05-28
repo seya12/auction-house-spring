@@ -2,6 +2,7 @@ package com.auction.house.controller;
 
 import com.auction.house.controller.dto.article.*;
 import com.auction.house.controller.dto.bid.*;
+import com.auction.house.entity.*;
 import com.auction.house.entity.enums.*;
 import com.auction.house.service.*;
 import org.modelmapper.*;
@@ -37,8 +38,7 @@ public class ArticleController {
   public ArticleDto getArticle(@PathVariable Long id) {
     var article = articleService.getArticle(id).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
-
-
+    
     return modelMapper.map(article, ArticleDto.class);
   }
 
@@ -50,11 +50,23 @@ public class ArticleController {
     var customer = customerService.getCustomer(bid.getCustomerId())
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-    if(articleService.makeBid(article, customer, bid.getBid())){
+    if (articleService.makeBid(article, customer, bid.getBid())) {
       return ResponseEntity.noContent().build();
     }
 
     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Higher bid already exists");
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<ArticleDto> createArticle(@RequestBody ArticleForCreationDto article) {
+    var customer = customerService.getCustomer(article.getCustomerId())
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+    var articleEntity = modelMapper.map(article, Article.class);
+    articleEntity.setId(null);
+    var newArticle = articleService.insert(articleEntity, customer);
+    return new ResponseEntity<>(modelMapper.map(newArticle, ArticleDto.class), HttpStatus.CREATED);
   }
 
 }
