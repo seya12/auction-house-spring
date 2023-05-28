@@ -10,11 +10,11 @@ import java.util.*;
 @Service
 public class ArticleService {
   final ArticleRepository articleRepository;
-  final BidRepository bidRepository;
+  final BidService bidService;
 
-  public ArticleService(ArticleRepository articleRepository, BidRepository bidRepository) {
+  public ArticleService(ArticleRepository articleRepository, BidService bidService) {
     this.articleRepository = articleRepository;
-    this.bidRepository = bidRepository;
+    this.bidService = bidService;
   }
 
   public List<Article> getArticles(ArticleStatus status) {
@@ -31,12 +31,16 @@ public class ArticleService {
     if(article == null || customer == null || bid == null){
       return false;
     }
+    if(bidService.getHighestBid(article).getBid() >= bid){
+      return false;
+    }
+
     Bid bidEntity = new Bid();
     bidEntity.addArticle(article);
     bidEntity.addCustomer(customer);
     bidEntity.setBid(bid);
 
-    bidRepository.save(bidEntity);
+    bidService.insert(bidEntity);
     return true;
   }
 }

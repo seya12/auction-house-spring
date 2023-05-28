@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Article } from "../services/auction-house-service";
+import { ArticleDto } from "../services/auction-house-service";
 import * as api from "../services/auction-house-service";
-import { Link } from "react-router-dom";
+import { DataTable } from "./articles/data-table";
+import { columns } from "./articles/columns";
 
 const ArticleList: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<ArticleDto[]>([]);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -17,24 +18,11 @@ const ArticleList: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {articles
-          .sort((a, b) => a.name?.localeCompare(b.name ?? "") ?? 0)
-          .map((article) => (
-            <div
-              key={article.id}
-              className="rounded border border-gray-200 p-4 shadow">
-              <h2 className="mb-2 text-xl font-bold">{article.name}</h2>
-              <p className="text-gray-600">{article.description}</p>
-              <Link
-                className="text-blue-500 hover:text-blue-700"
-                to={article.id + ""}>
-                Read more
-              </Link>
-            </div>
-          ))}
-      </div>
+    <div className="container mx-auto py-10">
+      <DataTable
+        columns={columns}
+        data={articles}
+      />
     </div>
   );
 };

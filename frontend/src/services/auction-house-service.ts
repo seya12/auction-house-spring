@@ -21,9 +21,13 @@ export type CustomerInfoDto = {
     id: number;
     email: string;
 };
-export type BidDto = {
+export type BidForCreationDto = {
     customerId: number;
     bid: number;
+};
+export type BidDto = {
+    bid: number;
+    date?: string;
 };
 export type ArticleDto = {
     id: number;
@@ -34,6 +38,7 @@ export type ArticleDto = {
     auctionStartDate?: string;
     auctionEndDate?: string;
     status?: "LISTED" | "AUCTION_RUNNING" | "SOLD" | "NOT_SOLD";
+    bids?: BidDto[];
 };
 export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
@@ -45,14 +50,14 @@ export function login(customerForLoginDto: CustomerForLoginDto, opts?: Oazapfts.
         body: customerForLoginDto
     }));
 }
-export function makeBid(id: number, bidDto: BidDto, opts?: Oazapfts.RequestOpts) {
+export function makeBid(id: number, bidForCreationDto: BidForCreationDto, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 204;
         data: object;
     }>(`/articles/${encodeURIComponent(id)}/bid`, oazapfts.json({
         ...opts,
         method: "POST",
-        body: bidDto
+        body: bidForCreationDto
     }));
 }
 export function getArticles({ status }: {

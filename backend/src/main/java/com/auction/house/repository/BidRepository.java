@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.*;
 import java.util.*;
 
 public interface BidRepository extends JpaRepository<Bid, Long> {
+  Bid findFirstByArticleOrderByBidDesc(Article article);
 }

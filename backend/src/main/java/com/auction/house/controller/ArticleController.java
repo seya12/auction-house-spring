@@ -54,7 +54,7 @@ public class ArticleController {
       return ResponseEntity.noContent().build();
     }
 
-    return ResponseEntity.badRequest().build();
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Higher bid already exists");
   }
 
 }

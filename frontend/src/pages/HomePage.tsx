@@ -9,6 +9,7 @@ const navigation = [
   { name: "Articles", href: "articles" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
@@ -62,7 +63,11 @@ const HomePage: React.FC = () => {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://i.pinimg.com/736x/52/0c/5f/520c5f25e460762ebc2ebebe76eea0d8.jpg"
+                          src={
+                            user === null
+                              ? ""
+                              : "https://i.pinimg.com/736x/52/0c/5f/520c5f25e460762ebc2ebebe76eea0d8.jpg"
+                          }
                           alt=""
                         />
                       </Menu.Button>

@@ -4,37 +4,31 @@ import ArticleDetail from "./components/ArticleDetail";
 import HomePage from "./pages/HomePage";
 import ArticleList from "./components/ArticleList";
 import Default from "./components/Default";
-import { useState } from "react";
-import UserContext, { User } from "./UserContext";
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
-
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <Routes>
+    <Routes>
+      <Route
+        path="/"
+        element={<LoginPage />}
+      />
+      <Route
+        path="home"
+        element={<HomePage />}>
         <Route
-          path="/"
-          element={<LoginPage />}
+          path=""
+          element={<Default />}
         />
         <Route
-          path="home"
-          element={<HomePage />}>
-          <Route
-            path=""
-            element={<Default />}
-          />
-          <Route
-            path="articles"
-            element={<ArticleList />}
-          />
-          <Route
-            path="articles/:id"
-            element={<ArticleDetail />}
-          />
-        </Route>
-      </Routes>
-    </UserContext.Provider>
+          path="articles"
+          element={<ArticleList />}
+        />
+        <Route
+          path="articles/:id"
+          element={<ArticleDetail />}
+        />
+      </Route>
+    </Routes>
   );
 }
 
