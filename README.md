@@ -54,7 +54,7 @@ following installed:
 2. Backend Setup
     - Open the backend folder:
       ```bash
-      cd auction-house/backend
+      cd auction-house-spring/backend
       ```
     - Build and run the backend application using Maven:
       ```bash
